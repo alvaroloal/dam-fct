@@ -192,4 +192,9 @@ function agregar_precio_producto() {
 }
 add_action('rest_api_init', 'agregar_precio_producto');
 
+add_filter( 'woocommerce_api_authentication_method', function( $auth_method ) {
+    return 'basic_auth';
+});
+
+
 
