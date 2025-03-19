@@ -1,0 +1,108 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=Layout1.bjl
+FileGroup1=Default Group
+Group=Default Group
+Library1=jcore
+Library2=jfx
+Library3=jxui
+NumberOfFiles=1
+NumberOfLibraries=3
+NumberOfModules=0
+Version=10.2
+@EndOfDesignText@
+#Region Project Attributes  
+    #MainFormWidth: 600
+    #MainFormHeight: 600 
+#End Region
+
+Sub Process_Globals
+	Private fx As JFX
+	Private MainForm As Form
+	Private xui As XUI
+	Private Button1 As Button
+	Private btnLimpiar As Button
+	Private btnGuardar As Button
+	Private btnVerDatos As Button
+	Private btnAgregar As Button
+	Private Label1 As Label
+	Private txtNombre As TextField
+	Private txtNuevaOpcion As TextField
+	Private chkAceptar As CheckBox
+	Private cmbOpciones As ComboBox
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)
+	MainForm = Form1
+	MainForm.RootPane.LoadLayout("Layout1") ' Cargar la interfaz
+	MainForm.Show
+    
+	' Agregar opciones al ComboBox
+	cmbOpciones.Items.AddAll(Array As String("Opción 1", "Opción 2", "Opción 3"))
+End Sub
+
+' Botón principal
+Sub Button1_Click
+	If chkAceptar.Checked Then
+		Dim seleccion As String = cmbOpciones.Value ' Obtener la opción seleccionada
+        
+		If seleccion <> Null And seleccion <> "" Then
+			Label1.Text = "Hola " & txtNombre.Text & ", elegiste: " & seleccion
+		Else
+			Label1.Text = "Por favor, selecciona una opción."
+		End If
+	Else
+		Label1.Text = "Debes aceptar los términos."
+	End If
+End Sub
+
+' Botón para limpiar los campos
+Sub btnLimpiar_Click
+	txtNombre.Text = "" ' Vacía el campo de texto
+	cmbOpciones.SelectedIndex = -1 ' Deselecciona cualquier opción
+	chkAceptar.Checked = False ' Desmarca el CheckBox
+	txtNuevaOpcion.Text = "" ' Vacía el campo para agregar opciones
+	Label1.Text = "Campos limpiados."
+End Sub
+
+' Botón para guardar datos en un archivo
+Sub btnGuardar_Click
+	If chkAceptar.Checked And cmbOpciones.Value <> Null And cmbOpciones.Value <> "" Then
+		Dim respuesta As Int = fx.Msgbox2(MainForm, "¿Deseas guardar la información?", "Confirmar", "Sí", "", "No", Null)
+        
+		If respuesta = fx.DialogResponse.POSITIVE Then
+			Dim texto As String = "Nombre: " & txtNombre.Text & ", Opción: " & cmbOpciones.Value & CRLF
+			File.WriteString(File.DirApp, "datos.txt", texto)
+			Label1.Text = "Datos guardados correctamente."
+		End If
+	Else
+		Label1.Text = "Faltan datos para guardar."
+	End If
+End Sub
+
+' Botón para ver los datos guardados
+Sub btnVerDatos_Click
+	If File.Exists(File.DirApp, "datos.txt") Then
+		Dim contenido As String = File.ReadString(File.DirApp, "datos.txt")
+		fx.Msgbox(MainForm, contenido, "Datos Guardados")
+	Else
+		Label1.Text = "No hay datos guardados."
+	End If
+End Sub
+
+' Botón para añadir nuevas opciones al ComboBox
+Sub btnAgregar_Click
+	Dim nuevaOpcion As String = txtNuevaOpcion.Text.Trim
+	If nuevaOpcion <> "" Then
+		cmbOpciones.Items.Add(nuevaOpcion)
+		txtNuevaOpcion.Text = "" ' Limpiar el campo
+		Label1.Text = "Opción añadida."
+	Else
+		Label1.Text = "Escribe una opción antes de añadir."
+	End If
+End Sub
+
+
+
+
+
